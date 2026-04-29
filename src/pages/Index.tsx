@@ -177,7 +177,7 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
               Единая база кадастровых планов России
             </div>
             <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight text-foreground mb-4 stagger-2 animate-fade-in">
-              Обмен кадастровыми планами и территориальными файлами
+              База кадастровых планов территории
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed mb-8 stagger-3 animate-fade-in">
               Находите, загружайте и скачивайте актуальные кадастровые планы по всей России. Быстро. Надёжно. Без лишних шагов.

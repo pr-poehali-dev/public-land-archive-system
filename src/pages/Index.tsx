@@ -164,7 +164,7 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
     { icon: "Search", title: "Умный поиск", desc: "Фильтрация по кадастровому номеру, адресу, площади и категории земель" },
     { icon: "Upload", title: "Загрузка файлов", desc: "Добавляйте кадастровые планы и DXF-файлы для обмена с другими пользователями" },
     { icon: "ShieldCheck", title: "Проверенные данные", desc: "Каждый план проходит модерацию и привязан к реестровым данным Росреестра" },
-    { icon: "Download", title: "Быстрое скачивание", desc: "Скачивайте файлы в PDF, DXF или XML после оплаты единым пакетом" },
+    { icon: "Download", title: "Быстрое скачивание", desc: "Скачивайте файлы в PDF, DXF, XML или MIF/MID после оплаты единым пакетом" },
   ];
 
   return (
@@ -383,7 +383,7 @@ function UploadPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold text-foreground mb-1">Загрузить кадастровый план</h1>
-      <p className="text-sm text-muted-foreground mb-7">Поддерживаемые форматы: PDF, DXF, XML, SHP, ZIP</p>
+      <p className="text-sm text-muted-foreground mb-7">Поддерживаемые форматы: PDF, DXF, XML, SHP, MIF/MID, ZIP</p>
 
       {!uploaded ? (
         <>

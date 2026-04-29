@@ -10,13 +10,15 @@ type Page = "home" | "search" | "upload" | "cabinet" | "payments" | "contacts";
 const LAND_TYPES = ["Все типы", "ИЖС", "СНТ / ДНП", "Сельхозназначение", "Коммерческая", "Промышленная", "Лесной фонд"];
 const AREA_OPTIONS = ["Любая площадь", "до 6 соток", "6–15 соток", "15–50 соток", "50–100 соток", "более 100 соток"];
 
+const FILE_TYPES = ["Все форматы", "PDF", "DXF", "XML", "SHP", "MIF/MID"];
+
 const mockPlans = [
-  { id: 1, cadastral: "77:01:0001001:123", address: "г. Москва, ул. Ленина, 5", area: "12.4 га", type: "ИЖС", updated: "18 апр 2026", downloads: 42, price: 890 },
-  { id: 2, cadastral: "50:21:0010205:88", address: "МО, Одинцовский р-н, д. Барвиха", area: "3.2 га", type: "СНТ / ДНП", updated: "22 апр 2026", downloads: 17, price: 490 },
-  { id: 3, cadastral: "47:14:1203001:412", address: "Ленинградская обл., Всеволожский р-н", area: "28.7 га", type: "Сельхозназначение", updated: "25 апр 2026", downloads: 63, price: 1290 },
-  { id: 4, cadastral: "23:43:0401015:55", address: "г. Краснодар, пр-т Чекистов", area: "0.8 га", type: "Коммерческая", updated: "27 апр 2026", downloads: 9, price: 650 },
-  { id: 5, cadastral: "66:41:0206007:234", address: "г. Екатеринбург, Верх-Исетский р-н", area: "5.1 га", type: "ИЖС", updated: "28 апр 2026", downloads: 31, price: 790 },
-  { id: 6, cadastral: "78:32:0010440:101", address: "г. Санкт-Петербург, Приморский р-н", area: "1.6 га", type: "Коммерческая", updated: "29 апр 2026", downloads: 24, price: 990 },
+  { id: 1, cadastral: "77:01:0001001:123", address: "г. Москва, ул. Ленина, 5", area: "12.4 га", type: "ИЖС", fileType: "PDF", updated: "18 апр 2026", downloads: 42, price: 890 },
+  { id: 2, cadastral: "50:21:0010205:88", address: "МО, Одинцовский р-н, д. Барвиха", area: "3.2 га", type: "СНТ / ДНП", fileType: "DXF", updated: "22 апр 2026", downloads: 17, price: 490 },
+  { id: 3, cadastral: "47:14:1203001:412", address: "Ленинградская обл., Всеволожский р-н", area: "28.7 га", type: "Сельхозназначение", fileType: "XML", updated: "25 апр 2026", downloads: 63, price: 1290 },
+  { id: 4, cadastral: "23:43:0401015:55", address: "г. Краснодар, пр-т Чекистов", area: "0.8 га", type: "Коммерческая", fileType: "SHP", updated: "27 апр 2026", downloads: 9, price: 650 },
+  { id: 5, cadastral: "66:41:0206007:234", address: "г. Екатеринбург, Верх-Исетский р-н", area: "5.1 га", type: "ИЖС", fileType: "MIF/MID", updated: "28 апр 2026", downloads: 31, price: 790 },
+  { id: 6, cadastral: "78:32:0010440:101", address: "г. Санкт-Петербург, Приморский р-н", area: "1.6 га", type: "Коммерческая", fileType: "PDF", updated: "29 апр 2026", downloads: 24, price: 990 },
 ];
 
 const historyItems = [
@@ -36,8 +38,11 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFileType, setSelectedFileType] = useState("Все форматы");
   const filteredPlans = mockPlans.filter((p) => {
-    return !searchQuery || p.cadastral.startsWith(searchQuery);
+    const matchCadastral = !searchQuery || p.cadastral.includes(searchQuery);
+    const matchFileType = selectedFileType === "Все форматы" || p.fileType === selectedFileType;
+    return matchCadastral && matchFileType;
   });
 
   const navItems: { label: string; page: Page; icon: string }[] = [
@@ -113,6 +118,7 @@ export default function Index() {
         {page === "search" && (
           <SearchPage
             searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+            selectedFileType={selectedFileType} setSelectedFileType={setSelectedFileType}
             filteredPlans={filteredPlans}
           />
         )}
@@ -251,7 +257,10 @@ function PlanCard({ plan, delay = 1 }: { plan: PlanItem; delay?: 1 | 2 | 3 | 4 |
           <div className="font-mono text-xs text-accent font-medium mb-0.5">{plan.cadastral}</div>
           <div className="text-sm font-medium text-foreground leading-snug">{plan.address}</div>
         </div>
-        <Badge variant="secondary" className="text-xs shrink-0">{plan.type}</Badge>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <Badge variant="secondary" className="text-xs">{plan.type}</Badge>
+          <Badge variant="outline" className="text-xs font-mono">{plan.fileType}</Badge>
+        </div>
       </div>
       <Separator className="my-3" />
       <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -273,9 +282,11 @@ function PlanCard({ plan, delay = 1 }: { plan: PlanItem; delay?: 1 | 2 | 3 | 4 |
 /* ─── SEARCH PAGE ─── */
 function SearchPage({
   searchQuery, setSearchQuery,
+  selectedFileType, setSelectedFileType,
   filteredPlans,
 }: {
   searchQuery: string; setSearchQuery: (v: string) => void;
+  selectedFileType: string; setSelectedFileType: (v: string) => void;
   filteredPlans: PlanItem[];
 }) {
   return (
@@ -286,26 +297,39 @@ function SearchPage({
       </div>
 
       <div className="bg-white rounded-lg border border-border p-5 mb-6">
-        <label className="block text-xs font-medium text-muted-foreground mb-1.5">Кадастровый квартал</label>
-        <div className="flex items-center gap-2">
-          <Input
-            placeholder="77:01:0001001"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-9 text-sm font-mono max-w-xs"
-          />
-          <Button size="sm" className="h-9 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
-            <Icon name="Search" size={13} className="mr-1.5" />
-            Найти
-          </Button>
-          {searchQuery && (
-            <Button size="sm" variant="ghost" className="h-9 text-xs text-muted-foreground" onClick={() => setSearchQuery("")}>
-              <Icon name="X" size={13} className="mr-1" />
-              Сбросить
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Кадастровый номер</label>
+            <Input
+              placeholder="77:01:0001001:123"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 text-sm font-mono"
+            />
+          </div>
+          <div className="sm:w-44">
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Тип файла</label>
+            <select
+              value={selectedFileType}
+              onChange={(e) => setSelectedFileType(e.target.value)}
+              className="w-full h-9 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              {FILE_TYPES.map((t) => <option key={t}>{t}</option>)}
+            </select>
+          </div>
+          <div className="flex items-end gap-2">
+            <Button size="sm" className="h-9 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
+              <Icon name="Search" size={13} className="mr-1.5" />
+              Найти
             </Button>
-          )}
+            {(searchQuery || selectedFileType !== "Все форматы") && (
+              <Button size="sm" variant="ghost" className="h-9 text-xs text-muted-foreground" onClick={() => { setSearchQuery(""); setSelectedFileType("Все форматы"); }}>
+                <Icon name="X" size={13} className="mr-1" />
+                Сбросить
+              </Button>
+            )}
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">Например: 77:01:0001001 — регион:район:квартал</p>
       </div>
 
       {filteredPlans.length === 0 ? (

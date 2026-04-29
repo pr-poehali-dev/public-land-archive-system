@@ -68,7 +68,7 @@ export default function Index() {
             <div className="w-7 h-7 bg-primary rounded flex items-center justify-center">
               <Icon name="Map" size={15} className="text-primary-foreground" />
             </div>
-            <span className="font-semibold text-sm tracking-tight text-foreground">КадастрПлан</span>
+            <span className="font-semibold text-sm tracking-tight text-foreground">База кадастровых планов территории</span>
           </button>
 
           <nav className="hidden md:flex items-center gap-6">
@@ -138,7 +138,7 @@ export default function Index() {
             <div className="w-5 h-5 bg-primary rounded flex items-center justify-center">
               <Icon name="Map" size={11} className="text-primary-foreground" />
             </div>
-            <span>КадастрПлан © 2026</span>
+            <span>База кадастровых планов территории © 2026</span>
           </div>
           <div className="flex items-center gap-4">
             <button className="hover:text-foreground transition-colors">Условия использования</button>

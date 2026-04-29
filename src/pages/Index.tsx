@@ -522,11 +522,11 @@ function CabinetPage({ historyItems, setPage }: { historyItems: typeof historyIt
 
 /* ─── PAYMENTS PAGE ─── */
 const DOWNLOAD_OPTIONS = [
-  { count: 5,   price: 80 },
-  { count: 10,  price: 140 },
-  { count: 20,  price: 240 },
-  { count: 50,  price: 500 },
-  { count: 100, price: 900 },
+  { count: 5,   price: 5 * 5 },
+  { count: 10,  price: 10 * 5 },
+  { count: 20,  price: 20 * 5 },
+  { count: 50,  price: 50 * 5 },
+  { count: 100, price: 100 * 5 },
 ];
 
 function PaymentsPage({ payments }: { payments: typeof payments }) {
@@ -564,7 +564,7 @@ function PaymentsPage({ payments }: { payments: typeof payments }) {
               </button>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground mt-2">80 ₽ за первые 5 скачиваний, далее — 8 ₽ за каждое</p>
+          <p className="text-xs text-muted-foreground mt-2">5 ₽ за одно скачивание</p>
         </div>
 
         <div className="flex items-center gap-4 pt-4 border-t border-border">

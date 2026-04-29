@@ -521,31 +521,71 @@ function CabinetPage({ historyItems, setPage }: { historyItems: typeof historyIt
 }
 
 /* ─── PAYMENTS PAGE ─── */
+const DOWNLOAD_OPTIONS = [
+  { count: 5,   price: 80 },
+  { count: 10,  price: 140 },
+  { count: 20,  price: 240 },
+  { count: 50,  price: 500 },
+  { count: 100, price: 900 },
+];
+
 function PaymentsPage({ payments }: { payments: typeof payments }) {
+  const [selected, setSelected] = useState(1);
+  const [ordered, setOrdered] = useState(false);
+
+  const option = DOWNLOAD_OPTIONS[selected];
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold text-foreground mb-1">Платежи и скачивание</h1>
       <p className="text-sm text-muted-foreground mb-7">История транзакций и управление подпиской</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
-        <div className="md:col-span-2 bg-primary rounded-lg p-5 text-primary-foreground">
-          <div className="text-xs font-medium opacity-70 mb-1">Баланс аккаунта</div>
-          <div className="text-3xl font-semibold font-mono mb-3">1 240 ₽</div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" className="h-7 text-xs bg-white text-primary hover:bg-white/90">
-              <Icon name="Plus" size={12} className="mr-1" />
-              Пополнить
-            </Button>
-            <span className="text-xs opacity-60">Доступно 5 скачиваний</span>
+      {/* Tariff card */}
+      <div className="bg-white rounded-lg border border-border p-6 mb-7">
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div>
+            <div className="text-xs font-medium text-muted-foreground mb-0.5">Тариф</div>
+            <div className="text-base font-semibold text-foreground">Базовый — 80 ₽/мес</div>
           </div>
+          <span className="tag-badge text-accent border border-accent/20 bg-accent/8">Активен</span>
         </div>
-        <div className="bg-white rounded-lg border border-border p-5">
-          <div className="text-xs font-medium text-muted-foreground mb-1">Текущий тариф</div>
-          <div className="text-base font-semibold text-foreground mb-1">Базовый — 80 ₽/мес</div>
-          <div className="text-xs text-muted-foreground mb-3">до 20 скачиваний / мес</div>
-          <Button variant="outline" size="sm" className="h-7 text-xs w-full">
-            Улучшить тариф
-          </Button>
+
+        <div className="mb-5">
+          <div className="text-xs font-medium text-muted-foreground mb-3">Выберите количество скачиваний</div>
+          <div className="grid grid-cols-5 gap-2">
+            {DOWNLOAD_OPTIONS.map((opt, i) => (
+              <button
+                key={i}
+                onClick={() => { setSelected(i); setOrdered(false); }}
+                className={`rounded-lg border-2 py-3 text-center transition-all ${selected === i ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
+              >
+                <div className={`text-base font-semibold font-mono ${selected === i ? "text-primary" : "text-foreground"}`}>{opt.count}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{opt.price} ₽</div>
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">80 ₽ за первые 5 скачиваний, далее — 8 ₽ за каждое</p>
+        </div>
+
+        <div className="flex items-center gap-4 pt-4 border-t border-border">
+          <div>
+            <div className="text-xs text-muted-foreground">Итого к оплате</div>
+            <div className="text-2xl font-semibold font-mono text-foreground">{option.price} ₽</div>
+          </div>
+          {!ordered ? (
+            <Button
+              className="h-10 px-6 text-sm bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => setOrdered(true)}
+            >
+              <Icon name="CreditCard" size={15} className="mr-2" />
+              Оплатить {option.count} скачиваний
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 text-green-600 text-sm font-medium animate-fade-in">
+              <Icon name="CheckCircle" size={16} />
+              Заявка принята — {option.count} скачиваний будут зачислены после оплаты
+            </div>
+          )}
         </div>
       </div>
 

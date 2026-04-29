@@ -36,15 +36,8 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState("Все типы");
-  const [selectedArea, setSelectedArea] = useState("Любая площадь");
-  const [addressFilter, setAddressFilter] = useState("");
-
   const filteredPlans = mockPlans.filter((p) => {
-    const matchQuery = !searchQuery || p.cadastral.includes(searchQuery) || p.address.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchType = selectedType === "Все типы" || p.type === selectedType;
-    const matchAddr = !addressFilter || p.address.toLowerCase().includes(addressFilter.toLowerCase());
-    return matchQuery && matchType && matchAddr;
+    return !searchQuery || p.cadastral.startsWith(searchQuery);
   });
 
   const navItems: { label: string; page: Page; icon: string }[] = [
@@ -120,9 +113,6 @@ export default function Index() {
         {page === "search" && (
           <SearchPage
             searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-            selectedType={selectedType} setSelectedType={setSelectedType}
-            selectedArea={selectedArea} setSelectedArea={setSelectedArea}
-            addressFilter={addressFilter} setAddressFilter={setAddressFilter}
             filteredPlans={filteredPlans}
           />
         )}
@@ -283,15 +273,9 @@ function PlanCard({ plan, delay = 1 }: { plan: PlanItem; delay?: 1 | 2 | 3 | 4 |
 /* ─── SEARCH PAGE ─── */
 function SearchPage({
   searchQuery, setSearchQuery,
-  selectedType, setSelectedType,
-  selectedArea, setSelectedArea,
-  addressFilter, setAddressFilter,
   filteredPlans,
 }: {
   searchQuery: string; setSearchQuery: (v: string) => void;
-  selectedType: string; setSelectedType: (v: string) => void;
-  selectedArea: string; setSelectedArea: (v: string) => void;
-  addressFilter: string; setAddressFilter: (v: string) => void;
   filteredPlans: PlanItem[];
 }) {
   return (
@@ -302,60 +286,26 @@ function SearchPage({
       </div>
 
       <div className="bg-white rounded-lg border border-border p-5 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Кадастровый номер</label>
-            <Input
-              placeholder="77:01:0001001:123"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 text-sm font-mono"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Адрес или населённый пункт</label>
-            <Input
-              placeholder="г. Москва..."
-              value={addressFilter}
-              onChange={(e) => setAddressFilter(e.target.value)}
-              className="h-9 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Тип земли</label>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full h-9 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              {LAND_TYPES.map((t) => <option key={t}>{t}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Площадь участка</label>
-            <select
-              value={selectedArea}
-              onChange={(e) => setSelectedArea(e.target.value)}
-              className="w-full h-9 px-3 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-1 focus:ring-ring"
-            >
-              {AREA_OPTIONS.map((a) => <option key={a}>{a}</option>)}
-            </select>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 mt-3">
-          <Button size="sm" className="h-8 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
+        <label className="block text-xs font-medium text-muted-foreground mb-1.5">Кадастровый квартал</label>
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="77:01:0001001"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-9 text-sm font-mono max-w-xs"
+          />
+          <Button size="sm" className="h-9 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
             <Icon name="Search" size={13} className="mr-1.5" />
             Найти
           </Button>
-          <Button
-            size="sm" variant="ghost"
-            className="h-8 text-xs text-muted-foreground"
-            onClick={() => { setSearchQuery(""); setAddressFilter(""); setSelectedType("Все типы"); setSelectedArea("Любая площадь"); }}
-          >
-            <Icon name="X" size={13} className="mr-1" />
-            Сбросить
-          </Button>
+          {searchQuery && (
+            <Button size="sm" variant="ghost" className="h-9 text-xs text-muted-foreground" onClick={() => setSearchQuery("")}>
+              <Icon name="X" size={13} className="mr-1" />
+              Сбросить
+            </Button>
+          )}
         </div>
+        <p className="text-xs text-muted-foreground mt-2">Например: 77:01:0001001 — регион:район:квартал</p>
       </div>
 
       {filteredPlans.length === 0 ? (

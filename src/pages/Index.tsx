@@ -541,7 +541,7 @@ function PaymentsPage({ payments }: { payments: typeof payments }) {
         </div>
         <div className="bg-white rounded-lg border border-border p-5">
           <div className="text-xs font-medium text-muted-foreground mb-1">Текущий тариф</div>
-          <div className="text-base font-semibold text-foreground mb-1">Базовый</div>
+          <div className="text-base font-semibold text-foreground mb-1">Базовый — 80 ₽/мес</div>
           <div className="text-xs text-muted-foreground mb-3">до 20 скачиваний / мес</div>
           <Button variant="outline" size="sm" className="h-7 text-xs w-full">
             Улучшить тариф
